@@ -37,12 +37,9 @@ struct ContentView: View {
                     Button(action: {
                         self.flagTapped(number)
                     }) {
-                        Image(self.countries[number])
-                            .renderingMode(.original)
+                        FlagImage(image: Image(self.countries[number]))                        
                     }
-                    .clipShape(Capsule())
-                    .overlay(Capsule().stroke(Color.black, lineWidth: 1))
-                    .shadow(color: .black, radius: 2)
+                    
                 }
                 Spacer()
                 Text("Your score is \(score)")
@@ -78,5 +75,17 @@ struct ContentView: View {
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
+    }
+}
+
+struct FlagImage: View {
+    var image: Image
+    
+    var body: some View {
+        image
+            .renderingMode(.original)
+            .clipShape(Capsule())
+            .overlay(Capsule().stroke(Color.black, lineWidth: 1))
+            .shadow(color: .black, radius: 2)
     }
 }
