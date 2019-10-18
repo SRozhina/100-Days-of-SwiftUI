@@ -9,39 +9,40 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var unitType = 1
+    @State private var unitType = 0
     
     @State private var fromUnit = 0
     @State private var toUnit = 1
     @State private var countString = "0"
+    @State private var unitsState: [Dimension] = Self.lengthUnits
     
-    private let lengthUnits = [UnitLength.meters,
-                               .kilometers,
-                               .feet,
-                               .yards,
-                               .miles]
-    private let temperatureUnits = [UnitTemperature.celsius,
-                                    .fahrenheit,
-                                    .kelvin]
-    private let timeUnits = [UnitDuration.milliseconds,
-                             .seconds,
-                             .minutes,
-                             .hours]
-    private let volumeUnits = [UnitVolume.milliliters,
-                               .liters,
-                               .cups,
-                               .pints,
-                               .gallons]
+    private static let lengthUnits = [UnitLength.meters,
+                                      .kilometers,
+                                      .feet,
+                                      .yards,
+                                      .miles]
+    private static let temperatureUnits = [UnitTemperature.celsius,
+                                           .fahrenheit,
+                                           .kelvin]
+    private static let timeUnits = [UnitDuration.milliseconds,
+                                    .seconds,
+                                    .minutes,
+                                    .hours]
+    private static let volumeUnits = [UnitVolume.milliliters,
+                                      .liters,
+                                      .cups,
+                                      .pints,
+                                      .gallons]
     
     private var allUnits: [(String, [Dimension])] {
-        return [("Length", lengthUnits),
-                ("Temperature", temperatureUnits),
-                ("Time", timeUnits),
-                ("Volume", volumeUnits)]
+        return [("Length", Self.lengthUnits),
+                ("Temperature", Self.temperatureUnits),
+                ("Time", Self.timeUnits),
+                ("Volume", Self.volumeUnits)]
     }
     
     private var units: [Dimension] {
-        guard unitType < allUnits.count else { return lengthUnits }
+        guard unitType < allUnits.count else { return Self.lengthUnits }
         return allUnits[unitType].1
     }
     
@@ -57,10 +58,17 @@ struct ContentView: View {
     }
     
     var body: some View {
-        NavigationView {
+        let typePickerIndexBinding = Binding<Int>(get: {
+            return self.unitType
+        }) {
+            self.unitType = $0
+            self.unitsState = self.units
+        }
+        
+        return NavigationView {
             Form {
                 Section(header: Text("Choose units type")) {
-                    Picker("Unit type", selection: $unitType) {
+                    Picker("Unit type", selection: typePickerIndexBinding) {
                         ForEach(0..<allUnits.count) {
                             Text(self.allUnits[$0].0)
                         }
